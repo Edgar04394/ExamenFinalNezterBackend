@@ -2,10 +2,11 @@ using Dapper;
 using Microsoft.Data.SqlClient;
 using System.Data;
 using ApiExamen.Models;
+using ApiExamen.Interfaces;
 
 namespace ApiExamen.Services
 {
-    public class EmpleadoService
+    public class EmpleadoService : IEmpleadoService
     {
         private readonly string _connectionString;
 
@@ -61,7 +62,6 @@ namespace ApiExamen.Services
             }
         }
 
-
         public async Task<IEnumerable<Empleado>> Consultar()
         {
             using var con = new SqlConnection(_connectionString);
@@ -91,7 +91,6 @@ namespace ApiExamen.Services
             }, commandType: CommandType.StoredProcedure);
         }
 
-
         public async Task Actualizar(Empleado e)
         {
             using var con = new SqlConnection(_connectionString);
@@ -106,6 +105,33 @@ namespace ApiExamen.Services
             await con.ExecuteAsync("DELETE FROM Usuarios WHERE codigoEmpleado = @codigoEmpleado", new { codigoEmpleado });
 
             await con.ExecuteAsync("spEliminarEmpleado", new { codigoEmpleado }, commandType: CommandType.StoredProcedure);
+        }
+
+        public async Task<List<Empleado>> ObtenerTodos()
+        {
+            using var con = new SqlConnection(_connectionString);
+            var result = await con.QueryAsync<Empleado>("spConsultarEmpleados", commandType: CommandType.StoredProcedure);
+            return result.ToList();
+        }
+
+        public async Task<Empleado?> ObtenerPorCodigo(int codigoEmpleado)
+        {
+            using var con = new SqlConnection(_connectionString);
+            return await con.QueryFirstOrDefaultAsync<Empleado>(
+                "SELECT * FROM Empleados WHERE codigoEmpleado = @codigoEmpleado", 
+                new { codigoEmpleado });
+        }
+
+        public async Task<EmpleadoUsuarioDTO?> ObtenerEmpleadoConCredenciales(string usuario, string contrasena)
+        {
+            using var con = new SqlConnection(_connectionString);
+            var query = @"
+                SELECT e.*, u.usuario, u.contrasena
+                FROM Empleados e
+                JOIN Usuarios u ON e.codigoEmpleado = u.codigoEmpleado
+                WHERE u.usuario = @usuario AND u.contrasena = @contrasena";
+            
+            return await con.QueryFirstOrDefaultAsync<EmpleadoUsuarioDTO>(query, new { usuario, contrasena });
         }
     }
 }

@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using ApiExamen.Models;
-using ApiExamen.Services;
+using ApiExamen.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 
 namespace ApiExamen.Controllers
@@ -9,9 +9,9 @@ namespace ApiExamen.Controllers
     [Route("api/[controller]")]
     public class AuthController : ControllerBase
     {
-        private readonly AuthService _authService;
+        private readonly IAuthService _authService;
 
-        public AuthController(AuthService authService)
+        public AuthController(IAuthService authService)
         {
             _authService = authService;
         }
@@ -20,12 +20,22 @@ namespace ApiExamen.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequest request)
         {
-            var token = await _authService.Login(request);
+            try
+            {
+                var token = await _authService.Login(request);
 
-            if (token == null)
-                return Unauthorized("Credenciales incorrectas");
+                if (token == null)
+                    return Unauthorized("Credenciales incorrectas");
 
-            return Ok(new { token }); // Retorna solo el token JWT
+                return Ok(new { token }); // Retorna solo el token JWT
+            }
+            catch (Exception ex)
+            {
+                // Log del error (en producción usarías un logger)
+                Console.WriteLine($"Error en login: {ex.Message}");
+                
+                return StatusCode(500, new { error = "Error interno del servidor", message = ex.Message });
+            }
         }
     }
 }

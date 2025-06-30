@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using ApiExamen.Models;
-using ApiExamen.Services;
+using ApiExamen.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using System.Text.Json;
 using Dapper;
@@ -14,10 +14,10 @@ namespace ApiExamen.Controllers
     [Route("api/[controller]")]
     public class ResultadosController : ControllerBase
     {
-        private readonly ResultadoService _resultadoService;
+        private readonly IResultadoService _resultadoService;
         private readonly string _connectionString;
 
-        public ResultadosController(ResultadoService resultadoService, IConfiguration config)
+        public ResultadosController(IResultadoService resultadoService, IConfiguration config)
         {
             _resultadoService = resultadoService;
             _connectionString = config.GetConnectionString("DefaultConnection")!;
@@ -28,7 +28,7 @@ namespace ApiExamen.Controllers
         {
             try
             {
-                await _resultadoService.GuardarRespuesta(respuestaEmpleado);
+                await _resultadoService.GuardarRespuestaEmpleado(respuestaEmpleado);
                 
                 var response = new { mensaje = "Respuesta guardada", success = true };
                 
@@ -46,7 +46,7 @@ namespace ApiExamen.Controllers
         {
             try
             {
-                var reporte = await _resultadoService.ObtenerReporte(asignacion.idAsignacion);
+                var reporte = await _resultadoService.ReportePromedioPorCompetencia(asignacion.idAsignacion);
                 
                 // Verificar si el reporte está vacío
                 if (!reporte.Any())
@@ -62,8 +62,8 @@ namespace ApiExamen.Controllers
             }
         }
 
-        [HttpGet("diagnostico/{idAsignacion}")]
-        public async Task<IActionResult> Diagnostico(int idAsignacion)
+        [HttpPost("diagnostico")]
+        public async Task<IActionResult> Diagnostico([FromBody] int idAsignacion)
         {
             try
             {
@@ -131,26 +131,40 @@ namespace ApiExamen.Controllers
             }
         }
 
-        [HttpGet("resultadosHistoricos/{codigoEmpleado}")]
-        public async Task<IActionResult> ResultadosHistoricos(int codigoEmpleado)
+        [HttpPost("resultadosHistoricos")]
+        public async Task<IActionResult> ResultadosHistoricos([FromBody] int codigoEmpleado)
         {
             try
             {
                 var resultados = await _resultadoService.ObtenerResultadosHistoricos(codigoEmpleado);
                 
-                return Ok(resultados);
+                return Ok(new {
+                    mensaje = "Resultados históricos obtenidos exitosamente",
+                    success = true,
+                    codigoEmpleado = codigoEmpleado,
+                    totalResultados = resultados.Count,
+                    resultados = resultados
+                });
             }
             catch (Exception ex)
             {
-                return BadRequest($"Error al obtener resultados históricos: {ex.Message}");
+                return BadRequest(new {
+                    mensaje = $"Error al obtener resultados históricos: {ex.Message}",
+                    success = false,
+                    codigoEmpleado = codigoEmpleado,
+                    error = ex.ToString()
+                });
             }
         }
 
-        [HttpGet("resultadosPorExamen/{idExamen}/{codigoEmpleado}")]
-        public async Task<IActionResult> ResultadosPorExamen(int idExamen, int codigoEmpleado)
+        [HttpPost("resultadosPorExamen")]
+        public async Task<IActionResult> ResultadosPorExamen([FromBody] object request)
         {
             try
             {
+                var idExamen = Convert.ToInt32(request.GetType().GetProperty("idExamen")?.GetValue(request));
+                var codigoEmpleado = Convert.ToInt32(request.GetType().GetProperty("codigoEmpleado")?.GetValue(request));
+                
                 var resultados = await _resultadoService.ObtenerResultadosPorExamen(idExamen, codigoEmpleado);
                 
                 return Ok(resultados);
@@ -166,13 +180,22 @@ namespace ApiExamen.Controllers
         {
             try
             {
-                await _resultadoService.GuardarResultadosEnHistorial(idAsignacion);
+                await _resultadoService.GuardarEnHistorial(idAsignacion);
                 
-                return Ok(new { mensaje = "Resultados guardados en historial", success = true });
+                return Ok(new { 
+                    mensaje = "Resultados guardados en historial exitosamente", 
+                    success = true,
+                    idAsignacion = idAsignacion
+                });
             }
             catch (Exception ex)
             {
-                return BadRequest($"Error al guardar en historial: {ex.Message}");
+                return BadRequest(new { 
+                    mensaje = $"Error al guardar en historial: {ex.Message}", 
+                    success = false,
+                    idAsignacion = idAsignacion,
+                    error = ex.ToString()
+                });
             }
         }
     }

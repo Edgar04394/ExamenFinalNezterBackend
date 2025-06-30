@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
+using ApiExamen.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -81,15 +82,16 @@ builder.Services.AddAuthentication(options =>
 });
 
 // ✅ Registra tus servicios personalizados
-builder.Services.AddScoped<AuthService>();
-builder.Services.AddScoped<EmpleadoService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
+builder.Services.AddScoped<IAsignacionService, AsignacionService>();
+builder.Services.AddScoped<IResultadoService, ResultadoService>();
+builder.Services.AddScoped<IEmpleadoService, EmpleadoService>();
 builder.Services.AddScoped<PuestoService>();
 builder.Services.AddScoped<ExamenService>();
 builder.Services.AddScoped<ClasificacionService>();
 builder.Services.AddScoped<PreguntaService>();
 builder.Services.AddScoped<RespuestaService>();
-builder.Services.AddScoped<AsignacionService>();
-builder.Services.AddScoped<ResultadoService>();
 
 // 🔧 Inicia app
 var app = builder.Build();

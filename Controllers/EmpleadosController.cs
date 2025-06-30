@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using ApiExamen.Models;
 using ApiExamen.Services;
 using Microsoft.AspNetCore.Authorization;
+using ApiExamen.Interfaces;
 
 namespace ApiExamen.Controllers
 {
@@ -10,9 +11,9 @@ namespace ApiExamen.Controllers
     [Route("api/[controller]")]
     public class EmpleadosController : ControllerBase
     {
-        private readonly EmpleadoService _empleadoService;
+        private readonly IEmpleadoService _empleadoService;
 
-        public EmpleadosController(EmpleadoService empleadoService)
+        public EmpleadosController(IEmpleadoService empleadoService)
         {
             _empleadoService = empleadoService;
         }

@@ -2,10 +2,11 @@ using Dapper;
 using Microsoft.Data.SqlClient;
 using System.Data;
 using ApiExamen.Models;
+using ApiExamen.Interfaces;
 
 namespace ApiExamen.Services
 {
-    public class AsignacionService
+    public class AsignacionService : IAsignacionService
     {
         private readonly string _connectionString;
 
@@ -25,10 +26,11 @@ namespace ApiExamen.Services
 
         }
 
-        public async Task<IEnumerable<Asignacion>> ConsultarPorEmpleado(int codigoEmpleado)
+        public async Task<List<Asignacion>> ConsultarPorEmpleado(int codigoEmpleado)
         {
             using var con = new SqlConnection(_connectionString);
-            return await con.QueryAsync<Asignacion>("spConsultarAsignacionesEmpleado", new { codigoEmpleado }, commandType: CommandType.StoredProcedure);
+            var result = await con.QueryAsync<Asignacion>("spConsultarAsignacionesEmpleado", new { codigoEmpleado }, commandType: CommandType.StoredProcedure);
+            return result.ToList();
         }
 
         public async Task EliminarAsignacion(int idAsignacion)

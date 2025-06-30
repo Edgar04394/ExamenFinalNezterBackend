@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using ApiExamen.Models;
-using ApiExamen.Services;
+using ApiExamen.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 
 namespace ApiExamen.Controllers
@@ -10,9 +10,9 @@ namespace ApiExamen.Controllers
     [Route("api/[controller]")]
     public class AsignacionesController : ControllerBase
     {
-        private readonly AsignacionService _asignacionService;
+        private readonly IAsignacionService _asignacionService;
 
-        public AsignacionesController(AsignacionService asignacionService)
+        public AsignacionesController(IAsignacionService asignacionService)
         {
             _asignacionService = asignacionService;
         }
@@ -24,8 +24,8 @@ namespace ApiExamen.Controllers
             return Ok(new { mensaje = "Examen asignado" });
         }
 
-        [HttpDelete("eliminarAsignacion/{idAsignacion}")]
-        public async Task<IActionResult> EliminarAsignacion(int idAsignacion)
+        [HttpPost("eliminarAsignacion")]
+        public async Task<IActionResult> EliminarAsignacion([FromBody] int idAsignacion)
         {
             try
             {

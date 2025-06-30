@@ -5,29 +5,24 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using ApiExamen.Interfaces;
 
 namespace ApiExamen.Services
 {
-    public class AuthService
+    public class AuthService : IAuthService
     {
-        private readonly string _connectionString;
+        private readonly IUsuarioRepository _usuarioRepository;
         private readonly IConfiguration _config;
 
-        public AuthService(IConfiguration config)
+        public AuthService(IUsuarioRepository usuarioRepository, IConfiguration config)
         {
-            _connectionString = config.GetConnectionString("DefaultConnection")!;
+            _usuarioRepository = usuarioRepository;
             _config = config;
         }
 
         public async Task<string?> Login(LoginRequest request)
         {
-            using var con = new SqlConnection(_connectionString);
-            var sql = "SELECT * FROM Usuarios WHERE usuario = @usuario AND contrasena = @contrasena";
-            var usuario = await con.QueryFirstOrDefaultAsync<Usuario>(sql, new
-            {
-                usuario = request.Usuario,
-                contrasena = request.Contrasena
-            });
+            var usuario = await _usuarioRepository.ObtenerUsuarioPorCredenciales(request.Usuario, request.Contrasena);
 
             if (usuario == null) return null;
 
