@@ -1,0 +1,676 @@
+{
+	"info": {
+		"_postman_id": "nezter-api-tests-corrected",
+		"name": "Nezter API - Pruebas Corregidas",
+		"description": "Colección corregida con los nombres correctos de los endpoints del backend",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "🔐 Autenticación",
+			"item": [
+				{
+					"name": "Login Admin (edgar@gmail.com)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"usuario\": \"edgar@gmail.com\",\n  \"contrasena\": \"admin123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/login",
+							"host": ["{{base_url}}"],
+							"path": ["api", "auth", "login"]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    if (response.token) {",
+									"        pm.environment.set('admin_token', response.token);",
+									"        console.log('Token admin guardado:', response.token);",
+									"    }",
+									"}"
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "Login Empleado (cris@gmail.com)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"usuario\": \"cris@gmail.com\",\n  \"contrasena\": \"empleado123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/login",
+							"host": ["{{base_url}}"],
+							"path": ["api", "auth", "login"]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    if (response.token) {",
+									"        pm.environment.set('empleado_token', response.token);",
+									"        console.log('Token empleado guardado:', response.token);",
+									"    }",
+									"}"
+								]
+							}
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "👥 Empleados",
+			"item": [
+				{
+					"name": "Obtener Todos los Empleados",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/empleados/visualizarEmpleado",
+							"host": ["{{base_url}}"],
+							"path": ["api", "empleados", "visualizarEmpleado"]
+						}
+					}
+				},
+				{
+					"name": "Crear Nuevo Empleado",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"nombre\": \"Ana\",\n  \"apellidoPaterno\": \"García\",\n  \"apellidoMaterno\": \"López\",\n  \"fechaNacimiento\": \"1995-03-15T00:00:00\",\n  \"fechaInicioContrato\": \"2024-01-15T00:00:00\",\n  \"idPuesto\": 2\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/empleados/CrearEmpleado",
+							"host": ["{{base_url}}"],
+							"path": ["api", "empleados", "CrearEmpleado"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "🏢 Puestos",
+			"item": [
+				{
+					"name": "Obtener Todos los Puestos",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/puestos/visualizarPuesto",
+							"host": ["{{base_url}}"],
+							"path": ["api", "puestos", "visualizarPuesto"]
+						}
+					}
+				},
+				{
+					"name": "Crear Nuevo Puesto",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"puesto\": \"QA Tester\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/puestos/CrearPuesto",
+							"host": ["{{base_url}}"],
+							"path": ["api", "puestos", "CrearPuesto"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "📝 Exámenes",
+			"item": [
+				{
+					"name": "Obtener Todos los Exámenes",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/examenes/VisualizarExamen",
+							"host": ["{{base_url}}"],
+							"path": ["api", "examenes", "VisualizarExamen"]
+						}
+					}
+				},
+				{
+					"name": "Crear Nuevo Examen",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"titulo\": \"Examen de Liderazgo\",\n  \"descripcion\": \"Evaluación de habilidades de liderazgo y gestión de equipos\",\n  \"tiempoLimite\": \"00:45:00\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/examenes/CrearExamen",
+							"host": ["{{base_url}}"],
+							"path": ["api", "examenes", "CrearExamen"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "🏷️ Clasificaciones",
+			"item": [
+				{
+					"name": "Obtener Todas las Clasificaciones",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/clasificaciones/VisualizarClasificacion",
+							"host": ["{{base_url}}"],
+							"path": ["api", "clasificaciones", "VisualizarClasificacion"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "❓ Preguntas",
+			"item": [
+				{
+					"name": "Obtener Preguntas por Examen (ID: 1)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"idExamen\": 1\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/preguntas/visualizarPreguntaPorExamen",
+							"host": ["{{base_url}}"],
+							"path": ["api", "preguntas", "visualizarPreguntaPorExamen"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "💬 Respuestas",
+			"item": [
+				{
+					"name": "Obtener Respuestas por Pregunta (ID: 1)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"idPregunta\": 1\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/respuestas/VisualizarRespuestaPorPregunta",
+							"host": ["{{base_url}}"],
+							"path": ["api", "respuestas", "VisualizarRespuestaPorPregunta"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "📋 Asignaciones",
+			"item": [
+				{
+					"name": "Asignar Examen a Empleado",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"idExamen\": 1,\n  \"codigoEmpleado\": 1\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/asignaciones/AsignarExamenAEmpleado",
+							"host": ["{{base_url}}"],
+							"path": ["api", "asignaciones", "AsignarExamenAEmpleado"]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    console.log('✅ Examen asignado exitosamente');",
+									"    // Como no devuelve ID, usamos 1 por defecto",
+									"    pm.environment.set('asignacion_id', 1);",
+									"}"
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "Consultar Asignaciones por Empleado (ID: 1)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"codigoEmpleado\": 1\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/asignaciones/VisualizarAsignacionesPorEmpleado",
+							"host": ["{{base_url}}"],
+							"path": ["api", "asignaciones", "VisualizarAsignacionesPorEmpleado"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "📊 Resultados",
+			"item": [
+				{
+					"name": "Guardar Respuesta de Empleado",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{empleado_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"idAsignacion\": {{asignacion_id}},\n  \"idPregunta\": 1,\n  \"idRespuesta\": 5\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/resultados/guardarRespuesta",
+							"host": ["{{base_url}}"],
+							"path": ["api", "resultados", "guardarRespuesta"]
+						}
+					}
+				},
+				{
+					"name": "Obtener Reporte por Competencia",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"idAsignacion\": {{asignacion_id}}\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/resultados/reportePorCompetencia",
+							"host": ["{{base_url}}"],
+							"path": ["api", "resultados", "reportePorCompetencia"]
+						}
+					}
+				},
+				{
+					"name": "Guardar en Historial",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/resultados/guardarEnHistorial/{{asignacion_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "resultados", "guardarEnHistorial", "{{asignacion_id}}"]
+						}
+					}
+				},
+				{
+					"name": "Obtener Historial de Empleado (ID: 1)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"codigoEmpleado\": 1\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/resultados/resultadosHistoricos",
+							"host": ["{{base_url}}"],
+							"path": ["api", "resultados", "resultadosHistoricos"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "🧪 Flujo Completo de Prueba",
+			"item": [
+				{
+					"name": "1. Login Admin",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"usuario\": \"edgar@gmail.com\",\n  \"contrasena\": \"admin123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/login",
+							"host": ["{{base_url}}"],
+							"path": ["api", "auth", "login"]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    if (response.token) {",
+									"        pm.environment.set('admin_token', response.token);",
+									"        console.log('✅ Login admin exitoso');",
+									"    }",
+									"}"
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "2. Asignar Examen",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"idExamen\": 1,\n  \"codigoEmpleado\": 1\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/asignaciones/AsignarExamenAEmpleado",
+							"host": ["{{base_url}}"],
+							"path": ["api", "asignaciones", "AsignarExamenAEmpleado"]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    console.log('✅ Examen asignado exitosamente');",
+									"    pm.environment.set('asignacion_id', 1);",
+									"}"
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "3. Login Empleado",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"usuario\": \"cris@gmail.com\",\n  \"contrasena\": \"empleado123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/login",
+							"host": ["{{base_url}}"],
+							"path": ["api", "auth", "login"]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    if (response.token) {",
+									"        pm.environment.set('empleado_token', response.token);",
+									"        console.log('✅ Login empleado exitoso');",
+									"    }",
+									"}"
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "4. Responder Examen (Una Respuesta)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{empleado_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"idAsignacion\": {{asignacion_id}},\n  \"idPregunta\": 1,\n  \"idRespuesta\": 5\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/resultados/guardarRespuesta",
+							"host": ["{{base_url}}"],
+							"path": ["api", "resultados", "guardarRespuesta"]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    console.log('✅ Respuesta guardada exitosamente');",
+									"}"
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "5. Ver Reporte",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"idAsignacion\": {{asignacion_id}}\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/resultados/reportePorCompetencia",
+							"host": ["{{base_url}}"],
+							"path": ["api", "resultados", "reportePorCompetencia"]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    console.log('✅ Reporte generado:', response);",
+									"}"
+								]
+							}
+						}
+					]
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:5054"
+		}
+	]
+} 

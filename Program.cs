@@ -12,7 +12,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAngularApp", policy =>
     {
-        policy.WithOrigins("http://localhost:4200") // <-- Tu app Angular
+        policy.WithOrigins("http://localhost:4200", "https://www.postman.com", "chrome-extension://*") // <-- Tu app Angular + Postman
               .AllowAnyHeader()
               .AllowAnyMethod();
     });

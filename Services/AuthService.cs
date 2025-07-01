@@ -22,7 +22,7 @@ namespace ApiExamen.Services
 
         public async Task<string?> Login(LoginRequest request)
         {
-            var usuario = await _usuarioRepository.ObtenerUsuarioPorCredenciales(request.Usuario, request.Contrasena);
+            var usuario = await _usuarioRepository.ObtenerUsuarioPorCredenciales(request.Usuario ?? "", request.Contrasena ?? "");
 
             if (usuario == null) return null;
 
@@ -33,8 +33,8 @@ namespace ApiExamen.Services
 
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name, usuario.usuario!),
-                new Claim(ClaimTypes.Role, usuario.rol!) // Aquí va el rol
+                new Claim(ClaimTypes.Name, usuario.usuario ?? ""),
+                new Claim(ClaimTypes.Role, usuario.rol ?? "") // Aquí va el rol
             };
 
             // Agregar el claim de codigoEmpleado si existe
@@ -42,7 +42,7 @@ namespace ApiExamen.Services
             {
                 var codigoEmpleadoValue = usuario.GetType().GetProperty("codigoEmpleado")?.GetValue(usuario, null);
                 if (codigoEmpleadoValue != null)
-                    claims.Add(new Claim("codigoEmpleado", codigoEmpleadoValue.ToString()));
+                    claims.Add(new Claim("codigoEmpleado", codigoEmpleadoValue.ToString() ?? ""));
             }
 
             var token = new JwtSecurityToken(

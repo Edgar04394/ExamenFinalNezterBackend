@@ -27,7 +27,7 @@ namespace ApiExamen.Services
                     r.idRespuesta
                 }, commandType: CommandType.StoredProcedure);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
@@ -175,7 +175,7 @@ namespace ApiExamen.Services
                 
                 return resultado.ToList();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
@@ -210,7 +210,7 @@ namespace ApiExamen.Services
                 
                 return resultados.ToList();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
